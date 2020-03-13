@@ -14,7 +14,7 @@ function draw() {
     background(30);
     for (i = 0; i < bubbles.length; i++) {
         bubbles[i].avoid();
-        bubbles[i].show();
+        bubbles[i].draw();
     }
 
 }
@@ -27,27 +27,42 @@ class Bubble {
     }
 
     move() {
-        //this.x += random(-5, 5);
-        //this.y += random(-5, 5);
         this.x = mouseX;
         this.y = mouseY;
     }
 
     avoid() {
-        let length = Math.sqrt(Math.pow((this.x - mouseX), 2) + Math.pow((this.y - mouseY), 2));
-        let direction = Math.atan2(this.y - mouseY, this.x - mouseX);
+        // Calculate polar coordinates of circle to mouse
+        let coordPolar = cart2polar(this.x - mouseX, this.y - mouseY);
 
-        let lengthAway = 100 / length;
-        let directionAway = direction + Math.PI;
+        // Calculate polar change
+        let coordPolarChange = [100 / coordPolar[0], coordPolar[1] + Math.PI];
 
-        this.x -= constrain((lengthAway * Math.cos(directionAway)) + (Math.random() * 2 - 1), -10, 10);
-        this.y -= constrain((lengthAway * Math.sin(directionAway)) + (Math.random() * 2 - 1), -10, 10);
+        // Convert polar change to cartesian
+        let coordCartChange = polar2cart(coordPolarChange[0], coordPolarChange[1]);
 
-        this.x = constrain(this.x, 30, width - 30);
-        this.y = constrain(this.y, 30, height - 30);
+        // Update position change
+        this.x -= constrain(coordCartChange[0], -10, 10);
+        this.y -= constrain(coordCartChange[1], -10, 10);
+
+        // Keep from leaving bounds
+        this.x = constrain(this.x, this.r, width - this.r);
+        this.y = constrain(this.y, this.r, height - this.r);
     }
 
-    show() {
+    draw() {
         ellipse(this.x, this.y, this.r, this.r);
     }
+}
+
+function cart2polar(x, y) {
+    return [Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), Math.atan2(y, x)];
+}
+
+function polar2cart(size, dir) {
+    return [size * Math.cos(dir), size * Math.sin(dir)]
+}
+
+function random(min = -1, max = 1) {
+    return (Math.random() * (max - min)) + min;
 }
