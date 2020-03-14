@@ -1,8 +1,2 @@
-node_modules/p5/license.txt
-node_modules/p5/package.json
-node_modules/p5/README.md
-node_modules/p5/lib/p5.js
-node_modules/p5/lib/p5.min.js
-node_modules/p5/lib/README.txt
-node_modules/p5/lib/addons/p5.sound.js
-node_modules/p5/lib/addons/p5.sound.min.js
+node_modules/
+audio/

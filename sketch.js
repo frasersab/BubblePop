@@ -40,7 +40,7 @@ class Bubble {
 
         // Debug variables
         this.arrowLength = 0.5;
-        this.arrows = true;
+        this.arrows = false;
     }
 
     draw() {
@@ -67,7 +67,7 @@ class Bubble {
     }
 
     think() {
-        //this.wander();
+        this.wander();
     }
 
     physics() {
