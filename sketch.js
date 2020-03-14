@@ -1,7 +1,7 @@
 let bubbles = [];
 function setup() {
     createCanvas(600, 400);
-    frameRate(25);
+    frameRate(60);
 
 }
 
@@ -19,22 +19,77 @@ function draw() {
 }
 
 class Bubble {
-    constructor(x, y, size) {
+    constructor(x, y, size, colour = 'white', velocityMax = 50) {
         // Bubble physical properties
-        this.size = size;
-        this.position = createVector(x, y);
-        this.velocity = createVector(random(-10, 10), random(-10, 10));
-        this.acceleration = createVector(random(-50, 50), random(-50, 50));
+        this.velocityMax = velocityMax;
+        this.accelRatio = 3;
+        this.accelerationMax = this.velocityMax * this.accelRatio;
 
-        this.velocityMax = 100;
-        this.accelerationMax = 300;
+        this.size = size;
+        this.colour = colour;
+        this.position = createVector(x, y);
+        this.velocity = createVector(random(-this.velocityMax, this.velocityMax), random(-this.velocityMax, this.velocityMax));                         // units of pixels / s
+        this.acceleration = createVector(random(-this.accelerationMax, this.accelerationMax), random(-this.accelerationMax, this.accelerationMax));     // units of pixels / s
+
+        this.alive = true;
+        this.deathVector = createVector(mouseX - this.position.x, mouseY - this.position.y);
+        this.timeImmunity = millis() + 3000;
 
         // Housekeeping variable
-        this.timeOld = 0;
+        this.timeOld = millis();
 
         // Debug variables
         this.arrowLength = 0.5;
         this.arrows = true;
+    }
+
+    draw() {
+        this.death();
+        if (this.alive) {
+            this.think();
+            this.physics();
+
+            // Draw bubble
+            fill(this.colour);
+            ellipse(this.position.x, this.position.y, this.size);
+
+            if (this.arrows) {
+                // Draw velocity arrow
+                drawArrow(this.position, this.velocity.copy().mult(this.arrowLength), 'blue');
+
+                // Draw accceleration arrow
+                drawArrow(this.position, this.acceleration.copy().mult(this.arrowLength), 'red');
+
+                // Draw death arrow
+                // drawArrow(this.position, this.deathVector, 'yellow');
+            }
+        }
+    }
+
+    think() {
+        //this.wander();
+    }
+
+    physics() {
+        // Δv = a * Δt
+        this.velocity.add(this.acceleration.copy().mult(deltaTime / 1000));
+
+        // Δd = v * Δt
+        this.position.add(this.velocity.copy().mult(deltaTime / 1000));
+
+        // Limit acceleration, velocity and position
+        this.acceleration.limit(this.accelerationMax);
+        this.velocity.limit(this.velocityMax);
+        this.position.set(constrain(this.position.x, this.size / 2, width - (this.size / 2)), constrain(this.position.y, this.size / 2, height - (this.size / 2)))
+    }
+
+    wander() {
+        // Delay the number of times acceleration changes
+        if (millis() - this.timeOld >= random(1500, 2500)) {
+            this.acceleration.rotate(random(0, PI));
+            this.acceleration.setMag(random(this.velocityMax, this.accelerationMax));
+            this.timeOld = millis();
+        }
     }
 
     attract() {
@@ -52,55 +107,14 @@ class Bubble {
 
     }
 
-    wander() {
-        // Delay the number of times acceleration changes
-        if (millis() - this.timeOld >= random(1500, 2500)) {
-            this.acceleration.rotate(random(0, PI));
-            this.acceleration.setMag(random(100, this.accelerationMax));
-            this.timeOld = millis();
+    death() {
+        if (millis() > this.timeImmunity) {
+            this.deathVector.set(mouseX - this.position.x, mouseY - this.position.y);
+            if (this.deathVector.mag() < (this.size / 2)) {
+                this.alive = false;
+            }
         }
     }
-
-    think() {
-        this.wander();
-    }
-
-    physics() {
-        // Δv = a * Δt
-        this.velocity.add(this.acceleration.copy().div(deltaTime));
-
-
-        // Δd = v * Δt
-        this.position.add(this.velocity.copy().div(deltaTime));
-
-        // Limit acceleration, velocity and position
-        this.acceleration.limit(this.accelerationMax);
-        this.velocity.limit(this.velocityMax);
-        this.position.set(constrain(this.position.x, this.size / 2, width - (this.size / 2)), constrain(this.position.y, this.size / 2, height - (this.size / 2)))
-    }
-
-    draw() {
-        this.think();
-        this.physics();
-        // Draw bubble
-        ellipse(this.position.x, this.position.y, this.size);
-
-        if (this.arrows) {
-            // Draw velocity
-            drawArrow(this.position, this.velocity.copy().mult(this.arrowLength), 'blue');
-
-            // Draw Acceleration
-            drawArrow(this.position, this.acceleration.copy().mult(this.arrowLength), 'red');
-        }
-    }
-}
-
-function cart2polar(x, y) {
-    return [Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), Math.atan2(y, x)];
-}
-
-function polar2cart(size, dir) {
-    return [size * Math.cos(dir), size * Math.sin(dir)]
 }
 
 function drawArrow(base, vec, myColor) {
