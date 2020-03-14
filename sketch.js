@@ -1,7 +1,7 @@
 let bubbles = [];
-
 function setup() {
     createCanvas(600, 400);
+    frameRate(25);
 
 }
 
@@ -13,45 +13,85 @@ function mousePressed() {
 function draw() {
     background(30);
     for (i = 0; i < bubbles.length; i++) {
-        bubbles[i].avoid();
         bubbles[i].draw();
     }
 
 }
 
 class Bubble {
-    constructor(x, y, r) {
-        this.x = x;
-        this.y = y;
-        this.r = r;
+    constructor(x, y, size) {
+        // Bubble physical properties
+        this.size = size;
+        this.position = createVector(x, y);
+        this.velocity = createVector(random(-10, 10), random(-10, 10));
+        this.acceleration = createVector(random(-50, 50), random(-50, 50));
+
+        this.velocityMax = 100;
+        this.accelerationMax = 300;
+
+        // Housekeeping variable
+        this.timeOld = 0;
+
+        // Debug variables
+        this.arrowLength = 0.5;
+        this.arrows = true;
     }
 
-    move() {
-        this.x = mouseX;
-        this.y = mouseY;
+    attract() {
+        // Create vector between mouse and bubble
+        let attractVector = createVector(this.position.x - mouseX, this.position.y - mouseY);
+
+        // Change amount of attraction
+        //attractVector.setMag(100 / attractVector.magSq())
+
+        // Add attration force to acceleration
+        this.acceleration.sub(attractVector);
     }
 
     avoid() {
-        // Calculate polar coordinates of circle to mouse
-        let coordPolar = cart2polar(this.x - mouseX, this.y - mouseY);
 
-        // Calculate polar change
-        let coordPolarChange = [100 / coordPolar[0], coordPolar[1] + Math.PI];
+    }
 
-        // Convert polar change to cartesian
-        let coordCartChange = polar2cart(coordPolarChange[0], coordPolarChange[1]);
+    wander() {
+        // Delay the number of times acceleration changes
+        if (millis() - this.timeOld >= random(1500, 2500)) {
+            this.acceleration.rotate(random(0, PI));
+            this.acceleration.setMag(random(100, this.accelerationMax));
+            this.timeOld = millis();
+        }
+    }
 
-        // Update position change
-        this.x -= constrain(coordCartChange[0], -10, 10);
-        this.y -= constrain(coordCartChange[1], -10, 10);
+    think() {
+        this.wander();
+    }
 
-        // Keep from leaving bounds
-        this.x = constrain(this.x, this.r, width - this.r);
-        this.y = constrain(this.y, this.r, height - this.r);
+    physics() {
+        // Δv = a * Δt
+        this.velocity.add(this.acceleration.copy().div(deltaTime));
+
+
+        // Δd = v * Δt
+        this.position.add(this.velocity.copy().div(deltaTime));
+
+        // Limit acceleration, velocity and position
+        this.acceleration.limit(this.accelerationMax);
+        this.velocity.limit(this.velocityMax);
+        this.position.set(constrain(this.position.x, this.size / 2, width - (this.size / 2)), constrain(this.position.y, this.size / 2, height - (this.size / 2)))
     }
 
     draw() {
-        ellipse(this.x, this.y, this.r, this.r);
+        this.think();
+        this.physics();
+        // Draw bubble
+        ellipse(this.position.x, this.position.y, this.size);
+
+        if (this.arrows) {
+            // Draw velocity
+            drawArrow(this.position, this.velocity.copy().mult(this.arrowLength), 'blue');
+
+            // Draw Acceleration
+            drawArrow(this.position, this.acceleration.copy().mult(this.arrowLength), 'red');
+        }
     }
 }
 
@@ -63,6 +103,16 @@ function polar2cart(size, dir) {
     return [size * Math.cos(dir), size * Math.sin(dir)]
 }
 
-function random(min = -1, max = 1) {
-    return (Math.random() * (max - min)) + min;
+function drawArrow(base, vec, myColor) {
+    push();
+    stroke(myColor);
+    strokeWeight(3);
+    fill(myColor);
+    translate(base.x, base.y);
+    line(0, 0, vec.x, vec.y);
+    rotate(vec.heading());
+    let arrowSize = 7;
+    translate(vec.mag() - arrowSize, 0);
+    triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
+    pop();
 }
