@@ -13,15 +13,29 @@ function mousePressed() {
 }
 
 function draw() {
+    // Draw the background
     background(30);
+
+    // Draw the bubbles, and remove the dead ones
     for (i = 0; i < bubbles.length; i++) {
-        bubbles[i].draw();
+        if (bubbles[i].alive) {
+            // Draw bubble if alive
+            bubbles[i].draw();
+        } else {
+            // Remove bubble from array if dead and re-check id
+            bubbles.splice(i, 1);
+            i--;
+        }
     }
 
+    // Bubble counter
+    textSize(32);
+    fill('grey');
+    text(bubbles.length, 10, 35);
 }
 
 class Bubble {
-    constructor(x, y, size, colour = 'white', velocityMax = 50) {
+    constructor(x, y, size, colour = 'grey', velocityMax = 50) {
         // Bubble physical properties
         this.velocityMax = velocityMax;
         this.accelRatio = 3;
@@ -111,6 +125,7 @@ class Bubble {
 
     death() {
         if (millis() > this.timeImmunity && this.alive) {
+            this.colour = 'white';
             this.deathVector.set(mouseX - this.position.x, mouseY - this.position.y);
             if (this.deathVector.mag() < (this.size / 2)) {
                 this.alive = false;
