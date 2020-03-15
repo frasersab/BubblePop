@@ -3,7 +3,7 @@ let audioPop;
 function setup() {
     createCanvas(600, 400);
     frameRate(60);
-    audioPop = createAudio('./audio/pop1.mp3');
+    audioPop = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/pop1.mp3');
 
 }
 
