@@ -1,9 +1,9 @@
 let bubbles = [];
-let pop;
+let audioPop;
 function setup() {
     createCanvas(600, 400);
     frameRate(60);
-    pop = createAudio('./audio/pop1.mp3');
+    audioPop = createAudio('./audio/pop1.mp3');
 
 }
 
@@ -56,7 +56,7 @@ class Bubble {
 
         // Debug variables
         this.arrowLength = 0.5;
-        this.arrows = false;
+        this.arrows = true;
     }
 
     draw() {
@@ -129,7 +129,7 @@ class Bubble {
             this.deathVector.set(mouseX - this.position.x, mouseY - this.position.y);
             if (this.deathVector.mag() < (this.size / 2)) {
                 this.alive = false;
-                pop.play();
+                audioPop.play();
             }
         }
     }
