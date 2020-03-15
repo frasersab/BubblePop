@@ -1,3 +1,5 @@
+console.log('Why hello there you snooping my code');
+
 let bubbles = [];
 let audioPop;
 function setup() {
