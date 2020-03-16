@@ -143,7 +143,7 @@ class Bubble {
             this.deathVector.set(mouseX - this.position.x, mouseY - this.position.y);
             if (this.deathVector.mag() < (this.size / 2)) {
                 this.alive = false;
-                audioPop[random(0, audioPop.length)].play();
+                audioPop[Math.trunc(random(0, audioPop.length))].play();
             }
         }
     }
