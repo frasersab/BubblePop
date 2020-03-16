@@ -1,11 +1,23 @@
 console.log('Why hello there you snooping my code');
 
 let bubbles = [];
-let audioPop;
+let audioPop = [];
+
 function setup() {
     createCanvas(600, 400);
     frameRate(60);
-    audioPop = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/pop1.mp3');
+    audioPop[0] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Fraser pop1.mp3');
+    audioPop[1] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Georgia voice pop.mp3');
+    audioPop[2] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Georgia voice popop.mp3');
+    audioPop[3] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Reamonn pop1.mp3');
+    audioPop[4] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Reamonn pop2.mp3');
+    audioPop[5] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Reamonn pop3.mp3');
+    audioPop[6] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Reamonn pop4.mp3');
+    audioPop[7] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Reamonn pop5.mp3');
+    audioPop[8] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Reamonn pop6.mp3');
+    audioPop[9] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Reamonn pop7.mp3');
+    audioPop[10] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Simmy pop1.mp3');
+    audioPop[11] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Simmy pop2.mp3');
 
 }
 
@@ -131,7 +143,7 @@ class Bubble {
             this.deathVector.set(mouseX - this.position.x, mouseY - this.position.y);
             if (this.deathVector.mag() < (this.size / 2)) {
                 this.alive = false;
-                audioPop.play();
+                audioPop[random(0, audioPop.length)].play();
             }
         }
     }
