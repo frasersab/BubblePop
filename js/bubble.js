@@ -97,15 +97,29 @@ class Bubble {
     }
 
     // this desides whether the buble should die or not
-    death(type = 'mouseOver') {
-        // check if immunity time is over
-        if (millis() >= this.timeImmunity) {
+    death(type = 'shrink') {
+        if (type == 'pop') {
+            // check if immunity time is over
+            if (millis() >= this.timeImmunity) {
+                this.deathVector.set(mouseX - this.position.x, mouseY - this.position.y);
+                if (this.deathVector.mag() < (this.size / 2) + (this.sizeMouse / 2)) {
+                    this.alive = false;
+                    audioLibrary[Math.trunc(random(0, audioLibrary.length))].play();
+                }
+            }
+        }
+        else if (type == 'shrink') {
             this.deathVector.set(mouseX - this.position.x, mouseY - this.position.y);
             if (this.deathVector.mag() < (this.size / 2) + (this.sizeMouse / 2)) {
+                this.size -= 0.5;
+            }
+            if (this.size < 25) {
                 this.alive = false;
                 audioLibrary[Math.trunc(random(0, audioLibrary.length))].play();
             }
+
         }
+
     }
 
     log() {

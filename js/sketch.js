@@ -1,16 +1,21 @@
 console.log('Why hello there you snooping my code');
 
 let bubbles = [];
+let virus = [];
 let audioLibrary = [];
 let font;
 
+let colourBackground = 'rgb(255, 168, 168)'
 let colourMouse = 'white';
-let colourCell = 'blue' //color(143, 218, 255);
+let colourCell = 'rgb(143, 218, 255)';
 let colourVirus = 'red';
 
 let sizeMouse = 30;
 let sizeCell = 30;
 let sizeVirus = 25;
+
+let timeGameStart;
+let timeGameOld;
 
 let gameState = 0;
 // 0 - start screen
@@ -34,6 +39,8 @@ function setup() {
     frameRate(60);
     noCursor();
     textFont(font);
+    strokeWeight(1);
+    stroke(60);
 
     for (i = 0; i < 10; i++) {
         let b = new Bubble(
@@ -50,6 +57,8 @@ function mousePressed() {
     // start screen
     if (gameState == 0) {
         gameState = 1;
+        timeGameStart = millis();
+        timeGameOld = 0;
     }
 
     // playing screen
@@ -62,10 +71,10 @@ function draw() {
     // --start screen--
     if (gameState == 0) {
         // draw the background
-        background(30);
+        background(colourBackground);
 
         fill('White');
-        textSize(32);
+        textSize(50);
 
         textAlign(CENTER, CENTER);
         text('Click to Start', width / 2, height / 2);
@@ -76,7 +85,7 @@ function draw() {
     // --playing screen--
     else if (gameState == 1) {
         // draw the background
-        background(30);
+        background(colourBackground);
 
         // draw the bubbles, and remove the dead ones
         for (i = 0; i < bubbles.length; i++) {
@@ -90,16 +99,36 @@ function draw() {
             }
         }
 
+        // draw the virus, and remove the dead ones
+        for (i = 0; i < virus.length; i++) {
+            if (virus[i].alive) {
+                // draw bubble if alive
+                virus[i].draw();
+            } else {
+                // remove bubble from array if dead and reset i counter
+                virus.splice(i, 1);
+                i--;
+            }
+        }
 
-
-
+        // bring in virus
+        if (millis() - timeGameOld >= 1000) {
+            let v = new Bubble(
+                random(sizeVirus / 2, width - (sizeVirus / 2)),
+                random(sizeVirus / 2, height - (sizeVirus / 2)),
+                sizeVirus,
+                sizeMouse,
+                colourVirus);
+            virus.push(v);
+            timeGameOld = millis();
+        }
 
     }
 
     // --end of game--
     else if (gameState == 2) {
         // draw the background
-        background(30);
+        background(colourBackground);
     }
 
     // draw white blood cell (mouse)
