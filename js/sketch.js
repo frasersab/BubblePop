@@ -4,6 +4,14 @@ let bubbles = [];
 let audioLibrary = [];
 let font;
 
+let colourMouse = 'white';
+let colourCell = 'blue' //color(143, 218, 255);
+let colourVirus = 'red';
+
+let sizeMouse = 30;
+let sizeCell = 30;
+let sizeVirus = 25;
+
 let gameState = 0;
 // 0 - start screen
 // 1 - playing screen
@@ -24,7 +32,18 @@ function preload() {
 function setup() {
     createCanvas(600, 400);
     frameRate(60);
+    noCursor();
     textFont(font);
+
+    for (i = 0; i < 10; i++) {
+        let b = new Bubble(
+            random(sizeCell / 2, width - (sizeCell / 2)),
+            random(sizeCell / 2, height - (sizeCell / 2)),
+            sizeCell,
+            sizeMouse,
+            colourCell);
+        bubbles.push(b);
+    }
 }
 
 function mousePressed() {
@@ -72,16 +91,18 @@ function draw() {
         }
 
 
-        // Bubble counter
-        textSize(32);
-        fill('grey');
-        text(bubbles.length, 10, 35);
+
 
 
     }
 
     // --end of game--
     else if (gameState == 2) {
-
+        // draw the background
+        background(30);
     }
+
+    // draw white blood cell (mouse)
+    fill(colourMouse);
+    ellipse(mouseX, mouseY, sizeMouse);
 }

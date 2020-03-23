@@ -1,19 +1,20 @@
 class Bubble {
-    constructor(x, y, size, colour = 'grey', velocityMax = 50) {
+    constructor(x, y, sizeCell, sizeMouse, colour = 'grey', velocityMax = 50) {
         // Bubble physical properties
         this.velocityMax = velocityMax;
         this.accelRatio = 3;
         this.accelerationMax = this.velocityMax * this.accelRatio;
 
-        this.size = size;
+        this.size = sizeCell;
         this.colour = colour;
         this.position = createVector(x, y);
         this.velocity = createVector(random(-this.velocityMax, this.velocityMax), random(-this.velocityMax, this.velocityMax));                         // units of pixels / s
         this.acceleration = createVector(random(-this.accelerationMax, this.accelerationMax), random(-this.accelerationMax, this.accelerationMax));     // units of pixels / s
 
+        this.sizeMouse = sizeMouse;
         this.alive = true;
         this.deathVector = createVector(mouseX - this.position.x, mouseY - this.position.y);
-        this.timeImmunity = millis() + 3000;
+        this.timeImmunity = 1000;
 
         // Housekeeping variable
         this.timeOld = millis();
@@ -99,9 +100,8 @@ class Bubble {
     death(type = 'mouseOver') {
         // check if immunity time is over
         if (millis() >= this.timeImmunity) {
-            this.colour = 'white';
             this.deathVector.set(mouseX - this.position.x, mouseY - this.position.y);
-            if (this.deathVector.mag() < (this.size / 2)) {
+            if (this.deathVector.mag() < (this.size / 2) + (this.sizeMouse / 2)) {
                 this.alive = false;
                 audioLibrary[Math.trunc(random(0, audioLibrary.length))].play();
             }
