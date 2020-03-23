@@ -1,53 +1,3 @@
-console.log('Why hello there you snooping my code');
-
-let bubbles = [];
-let audioPop = [];
-
-function setup() {
-    createCanvas(600, 400);
-    frameRate(60);
-    audioPop[0] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Fraser pop1.mp3');
-    audioPop[1] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Georgia voice pop.mp3');
-    audioPop[2] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Georgia voice popop.mp3');
-    audioPop[3] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Reamonn pop1.mp3');
-    audioPop[4] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Reamonn pop2.mp3');
-    audioPop[5] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Reamonn pop3.mp3');
-    audioPop[6] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Reamonn pop4.mp3');
-    audioPop[7] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Reamonn pop5.mp3');
-    audioPop[8] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Reamonn pop6.mp3');
-    audioPop[9] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Reamonn pop7.mp3');
-    audioPop[10] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Simmy pop1.mp3');
-    audioPop[11] = createAudio('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Simmy pop2.mp3');
-
-}
-
-function mousePressed() {
-    let b = new Bubble(mouseX, mouseY, 30);
-    bubbles.push(b);
-}
-
-function draw() {
-    // Draw the background
-    background(30);
-
-    // Draw the bubbles, and remove the dead ones
-    for (i = 0; i < bubbles.length; i++) {
-        if (bubbles[i].alive) {
-            // Draw bubble if alive
-            bubbles[i].draw();
-        } else {
-            // Remove bubble from array if dead and re-check id
-            bubbles.splice(i, 1);
-            i--;
-        }
-    }
-
-    // Bubble counter
-    textSize(32);
-    fill('grey');
-    text(bubbles.length, 10, 35);
-}
-
 class Bubble {
     constructor(x, y, size, colour = 'grey', velocityMax = 50) {
         // Bubble physical properties
@@ -70,20 +20,25 @@ class Bubble {
 
         // Debug variables
         this.arrowLength = 0.5;
-        this.arrows = true;
+        this.debug = false;
     }
 
+    // Figures out where the bubble should be and draws the bubble
     draw() {
-        this.death();
         if (this.alive) {
-            this.think();
+            // Check to see if bubble should die
+            this.death();
+
+            // Place the bubble behaviour here
+            this.bounce();
             this.physics();
 
             // Draw bubble
             fill(this.colour);
             ellipse(this.position.x, this.position.y, this.size);
 
-            if (this.arrows) {
+            // Draw the velocity/acceleration arrows if debug mode is active
+            if (this.debug) {
                 // Draw velocity arrow
                 drawArrow(this.position, this.velocity.copy().mult(this.arrowLength), 'blue');
 
@@ -96,13 +51,9 @@ class Bubble {
         }
     }
 
-    think() {
-        this.wander();
-    }
-
     physics() {
         // Δv = a * Δt
-        this.velocity.add(this.acceleration.copy().mult(deltaTime / 1000));
+        //this.velocity.add(this.acceleration.copy().mult(deltaTime / 1000));
 
         // Δd = v * Δt
         this.position.add(this.velocity.copy().mult(deltaTime / 1000));
@@ -113,6 +64,7 @@ class Bubble {
         this.position.set(constrain(this.position.x, this.size / 2, width - (this.size / 2)), constrain(this.position.y, this.size / 2, height - (this.size / 2)))
     }
 
+    // Randomly move around and change direction
     wander() {
         // Delay the number of times acceleration changes
         if (millis() - this.timeOld >= random(1500, 2500)) {
@@ -122,30 +74,46 @@ class Bubble {
         }
     }
 
-    attract() {
-        // Create vector between mouse and bubble
-        let attractVector = createVector(this.position.x - mouseX, this.position.y - mouseY);
-
-        // Change amount of attraction
-        //attractVector.setMag(100 / attractVector.magSq())
-
-        // Add attration force to acceleration
-        this.acceleration.sub(attractVector);
+    // Bounce of the sides of the canvas
+    bounce() {
+        if (this.position.x <= this.size / 2 || this.position.x >= width - (this.size / 2)) {
+            this.velocity.set(-this.velocity.x, this.velocity.y);
+        }
+        if (this.position.y <= this.size / 2 || this.position.y >= height - (this.size / 2)) {
+            this.velocity.set(this.velocity.x, -this.velocity.y);
+        }
     }
 
-    avoid() {
+    // Bounce off of other 
+    collide() {
 
     }
 
-    death() {
-        if (millis() > this.timeImmunity && this.alive) {
+    mouseAttract() {
+    }
+
+    mouseAvoid() {
+    }
+
+    // this desides whether the buble should die or not
+    death(type = 'mouseOver') {
+        // check if immunity time is over
+        if (millis() >= this.timeImmunity) {
             this.colour = 'white';
             this.deathVector.set(mouseX - this.position.x, mouseY - this.position.y);
             if (this.deathVector.mag() < (this.size / 2)) {
                 this.alive = false;
-                audioPop[Math.trunc(random(0, audioPop.length))].play();
+                audioLibrary[Math.trunc(random(0, audioLibrary.length))].play();
             }
         }
+    }
+
+    log() {
+        console.log('--- start log group ---');
+        //console.log('velocity size: ' + this.velocity.mag());
+        console.log('velocity direction: ' + this.velocity.heading());
+        //console.log('acceleration size: ' + this.acceleration.mag());
+        console.log('acceleration direction: ' + this.acceleration.heading());
     }
 }
 
