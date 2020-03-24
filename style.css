@@ -1,7 +1,7 @@
-@font-face { 
+/* @font-face { 
 font-family: 'Open Sans';
-src: url('https://raw.githubusercontent.com/frasersab/BubblePop/master/fonts/OpenSans-Regular.ttf') format('truetype');
-}
+src: url('./fonts/OpenSans-Regular.ttf') format('truetype');
+} */
 
 html {
     background-color: rgb(243, 220, 220);
