@@ -47,7 +47,7 @@ function preload() {
     audioLibrary[6] = loadSound('https://raw.githubusercontent.com/frasersab/BubblePop/master/audio/Reamonn pop6.mp3');
 
     //font = loadFont('./fonts/OpenSans-Regular.ttf');
-    font = loadFont('Calibri');
+    font = 'Calibri';
 }
 
 // -- Setup --
