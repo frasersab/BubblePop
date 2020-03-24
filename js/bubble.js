@@ -1,5 +1,7 @@
 class Bubble {
-    constructor(x, y, sizeCell, sizeMouse, colour = 'grey', velocityMax = 50) {
+    constructor(x, y, sizeCell, sizeMouse, colour = 'grey', type = 'cell', velocityMax = 50) {
+        this.type = type;
+
         // Bubble physical properties
         this.velocityMax = velocityMax;
         this.accelRatio = 3;
@@ -85,9 +87,13 @@ class Bubble {
         }
     }
 
-    // Bounce off of other 
-    collide() {
-
+    // check for intersection
+    intersects(other) {
+        if (dist(this.position.x, this.position.y, other.position.x, other.position.y) <= (this.size + other.size) / 2) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     mouseAttract() {
@@ -97,21 +103,19 @@ class Bubble {
     }
 
     // this desides whether the buble should die or not
-    death(type = 'shrink') {
+    death(type = 'pop') {
         if (type == 'pop') {
-            // check if immunity time is over
-            if (millis() >= this.timeImmunity) {
-                this.deathVector.set(mouseX - this.position.x, mouseY - this.position.y);
-                if (this.deathVector.mag() < (this.size / 2) + (this.sizeMouse / 2)) {
-                    this.alive = false;
-                    audioLibrary[Math.trunc(random(0, audioLibrary.length))].play();
-                }
+            this.deathVector.set(mouseX - this.position.x, mouseY - this.position.y);
+            if (this.deathVector.mag() < (this.size / 2) + (this.sizeMouse / 2)) {
+                this.alive = false;
+                audioLibrary[Math.trunc(random(0, audioLibrary.length))].play();
             }
+
         }
         else if (type == 'shrink') {
             this.deathVector.set(mouseX - this.position.x, mouseY - this.position.y);
             if (this.deathVector.mag() < (this.size / 2) + (this.sizeMouse / 2)) {
-                this.size -= 0.5;
+                this.size -= 1;
             }
             if (this.size < 25) {
                 this.alive = false;

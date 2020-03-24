@@ -1,0 +1,25 @@
+@font-face { 
+font-family: 'Open Sans';
+src: url('https://raw.githubusercontent.com/frasersab/BubblePop/master/fonts/OpenSans-Regular.ttf') format('truetype');
+}
+
+html {
+    background-color: rgb(243, 220, 220);
+}
+
+
+body {
+  margin: 0;
+  display: flex;
+
+  /* This centers our sketch horizontally. */
+  justify-content: center;
+
+  /* This centers our sketch vertically. */
+  align-items: center;
+}
+h1 {
+    font-family: 'Open Sans', 'Times New Roman', Times, serif;
+    text-align: center;
+    display: block;
+}
