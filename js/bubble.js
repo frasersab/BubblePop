@@ -18,6 +18,10 @@ class Bubble {
         this.deathVector = createVector(mouseX - this.position.x, mouseY - this.position.y);
         this.timeImmunity = 1000;
 
+        // World variables
+        this.gameHeight = gameHeight;
+        this.gameWidth = gameWidth;
+
         // Housekeeping variable
         this.timeOld = millis();
 
@@ -64,7 +68,7 @@ class Bubble {
         // Limit acceleration, velocity and position
         this.acceleration.limit(this.accelerationMax);
         this.velocity.limit(this.velocityMax);
-        this.position.set(constrain(this.position.x, this.size / 2, width - (this.size / 2)), constrain(this.position.y, this.size / 2, height - (this.size / 2)))
+        this.position.set(constrain(this.position.x, this.size / 2, this.gameWidth - (this.size / 2)), constrain(this.position.y, this.size / 2, this.gameHeight - (this.size / 2)))
     }
 
     // Randomly move around and change direction
@@ -79,10 +83,10 @@ class Bubble {
 
     // Bounce of the sides of the canvas
     bounce() {
-        if (this.position.x <= this.size / 2 || this.position.x >= width - (this.size / 2)) {
+        if (this.position.x <= this.size / 2 || this.position.x >= this.gameWidth - (this.size / 2)) {
             this.velocity.set(-this.velocity.x, this.velocity.y);
         }
-        if (this.position.y <= this.size / 2 || this.position.y >= height - (this.size / 2)) {
+        if (this.position.y <= this.size / 2 || this.position.y >= this.gameHeight - (this.size / 2)) {
             this.velocity.set(this.velocity.x, -this.velocity.y);
         }
     }

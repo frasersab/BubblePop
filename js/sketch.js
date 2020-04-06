@@ -1,25 +1,35 @@
 console.log('Why hello there you snooping my code');
-// TODO
-// - Add virus convert feature
-// - Add timer
-// - Make difficuilty increase
 
-
+// game variables
 let bubbles = [];
 let countVirus = 0;
-let countCell = 40;
+const cellNumStart = 40;
+const cellNumberDeath = 15;
+let countCell = cellNumStart;
 let audioLibrary = [];
 let font;
 
-let colourBackground = 'rgb(255, 168, 168)'
+// game sizes
+const gameWidth = 600;
+const gameHeight = 400;
+const gameTextHeight = 40;
+const healthBarWidth = 300;
+const healthBarHeight = 20;
+const healthBarCorner = ((gameHeight + (gameTextHeight / 2)) - (healthBarHeight / 2));
+
+// colours
+let colourBackground = 'rgb(255, 168, 168)';
+let colourBackgroundText = 'rgb(205, 118, 118)';
 let colourMouse = 'white';
 let colourCell = 'rgb(143, 218, 255)';
 let colourVirus = 'red';
 
+// sizes
 let sizeMouse = 20;
 let sizeCell = 30;
 let sizeVirus = 25;
 
+// timers
 let timeGameStart;
 let timeGameOld;
 let timeDuration;
@@ -52,14 +62,15 @@ function preload() {
 
 // -- Setup --
 function setup() {
-    let canvas = createCanvas(600, 400);
+    let canvas = createCanvas(gameWidth, gameHeight + gameTextHeight);
     frameRate(60);
     noCursor();
     textFont(font);
     strokeWeight(1);
     stroke(60);
 
-    for (i = 0; i < countCell; i++) {
+    // generate cells
+    for (i = 0; i < cellNumStart; i++) {
         let b = new Bubble(
             random(sizeCell / 2, width - (sizeCell / 2)),
             random(sizeCell / 2, height - (sizeCell / 2)),
@@ -87,26 +98,26 @@ function mousePressed() {
 
 // -- Draw --
 function draw() {
+    // draw the background
+    background(colourBackground);
+    // draw white blood cell (mouse)
+    fill(colourMouse);
+    ellipse(mouseX, mouseY, sizeMouse);
     // --start screen--
     if (gameState == 0) {
-        // draw the background
-        background(colourBackground);
-
+        push();
         fill('White');
         textSize(50);
-
         textAlign(CENTER, CENTER);
-        text('Click to Start', width / 2, height / 2);
 
+        text('Click to Start', width / 2, height / 2);
+        pop();
 
     }
 
     // --playing screen--
     else if (gameState == 1) {
-        // draw the background
-        background(colourBackground);
-
-        // do each bubble intersection check, draw and delete dead bubbles
+        // do bubble intersection check, draw and delete dead bubbles
         for (i = 0; i < bubbles.length; i++) {
             // check for intersection with other bubbles (do not check self or already checked combos)
             for (j = i; j < bubbles.length; j++) {
@@ -164,29 +175,42 @@ function draw() {
             timeGameOld = millis();
         }
 
-        push()
-        fill('grey');
-        textSize(20);
-        textAlign(LEFT, TOP);
-        text(countCell, 10, 10);
-        pop()
-
-        if (countCell < 15) {
+        if (countCell < cellNumberDeath) {
             gameState = 2;
             timeDuration = int((millis() - timeGameStart) / 1000);
         }
+        // Game text
+        push()
+        fill(colourBackgroundText)
+        rect(0, height - gameTextHeight, width, gameTextHeight);
+
+        fill('white')
+        textAlign(LEFT, CENTER);
+        textSize(25);
+        text('Health', 10, (height - gameTextHeight) + gameTextHeight / 2);
+
+        timeDuration = int((millis() - timeGameStart) / 1000);
+        let timeText = 'Time ' + timeDuration + 's';
+        text(timeText, 410, (height - gameTextHeight) + gameTextHeight / 2);
+
+        fill('red');
+        rect(90, healthBarCorner, healthBarWidth, healthBarHeight);
+
+        fill('green');
+        rect(90, healthBarCorner, healthBarWidth * ((countCell - cellNumberDeath + 1) / (cellNumStart - cellNumberDeath + 1)), healthBarHeight);
+
+        pop()
+
+
     }
 
     // --end of game--
     else if (gameState == 2) {
-        // draw the background
-        background(colourBackground);
-
         push()
-        fill('White');
+        fill('white');
         textAlign(CENTER, CENTER);
-
         textSize(50);
+
         text('You died', width / 2, height / 2);
 
         textSize(30);
@@ -195,7 +219,5 @@ function draw() {
         pop()
     }
 
-    // draw white blood cell (mouse)
-    fill(colourMouse);
-    ellipse(mouseX, mouseY, sizeMouse);
+
 }
