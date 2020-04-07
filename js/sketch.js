@@ -31,9 +31,11 @@ let sizeVirus = 25;
 
 // timers
 let timeGameStart;
-let timeGameOld;
+let timeVirusOld;
+let timeRegenOld;
 let timeDuration;
 let timeVirus = 1000;
+let timeRegen = 10000;
 
 let gameState = 0;
 // 0 - start screen
@@ -72,32 +74,36 @@ function setup() {
 
 // -- Mouse Pressed --
 function mousePressed() {
-    // start screen or end screen
-    if (gameState == 0 || gameState == 2) {
-        gameState = 1;
-        timeGameStart = millis();
-        timeGameOld = 0;
+    // check if in canvas
+    if (mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height) {
+        // start screen or end screen
+        if (gameState == 0 || gameState == 2) {
+            gameState = 1;
+            timeGameStart = millis();
+            timeVirusOld = 0;
+            timeRegenOld = 0;
 
 
-        bubbles = [];                   // remove all cells
-        sizeMouse = 20;                 // reset mouse size
-        countCell = cellNumStart;       // reset countCell
+            bubbles = [];                   // remove all cells
+            sizeMouse = 20;                 // reset mouse size
+            countCell = cellNumStart;       // reset countCell
 
-        // generate cells
-        for (i = 0; i < cellNumStart; i++) {
-            let b = new Bubble(
-                random(sizeCell / 2, width - (sizeCell / 2)),
-                random(sizeCell / 2, height - (sizeCell / 2)),
-                sizeCell,
-                sizeMouse,
-                colourCell);
-            bubbles.push(b);
+            // generate cells
+            for (i = 0; i < cellNumStart; i++) {
+                let b = new Bubble(
+                    random(sizeCell / 2, width - (sizeCell / 2)),
+                    random(sizeCell / 2, height - (sizeCell / 2)),
+                    sizeCell,
+                    sizeMouse,
+                    colourCell);
+                bubbles.push(b);
+            }
         }
-    }
 
-    // playing screen
-    else if (gameState == 1) {
+        // playing screen
+        else if (gameState == 1) {
 
+        }
     }
 }
 
@@ -166,7 +172,7 @@ function draw() {
         }
 
         // bring in virus
-        if (millis() - timeGameOld >= timeVirus) {
+        if (millis() - timeVirusOld >= timeVirus) {
             timeVirus = 3000;
             let v = new Bubble(
                 random(sizeVirus / 2, width - (sizeVirus / 2)),
@@ -177,7 +183,21 @@ function draw() {
                 'virus');
             bubbles.push(v);
             countVirus++;
-            timeGameOld = millis();
+            timeVirusOld = millis();
+        }
+
+        // regenerate a cell
+        if ((millis() - timeRegenOld >= 1000) && (countCell < cellNumStart)) {
+            let b = new Bubble(
+                random(sizeCell / 2, width - (sizeCell / 2)),
+                random(sizeCell / 2, height - (sizeCell / 2)),
+                sizeCell,
+                sizeMouse,
+                colourCell);
+            bubbles.push(b);
+
+            countCell++;
+            timeRegenOld = millis();
         }
 
         if (countCell < cellNumberDeath) {
@@ -224,6 +244,4 @@ function draw() {
         text('Click to play again', width / 2, (height / 2) + 35);
         pop()
     }
-
-
 }
