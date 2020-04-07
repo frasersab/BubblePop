@@ -68,26 +68,31 @@ function setup() {
     textFont(font);
     strokeWeight(1);
     stroke(60);
-
-    // generate cells
-    for (i = 0; i < cellNumStart; i++) {
-        let b = new Bubble(
-            random(sizeCell / 2, width - (sizeCell / 2)),
-            random(sizeCell / 2, height - (sizeCell / 2)),
-            sizeCell,
-            sizeMouse,
-            colourCell);
-        bubbles.push(b);
-    }
 }
 
 // -- Mouse Pressed --
 function mousePressed() {
-    // start screen
-    if (gameState == 0) {
+    // start screen or end screen
+    if (gameState == 0 || gameState == 2) {
         gameState = 1;
         timeGameStart = millis();
         timeGameOld = 0;
+
+
+        bubbles = [];                   // remove all cells
+        sizeMouse = 20;                 // reset mouse size
+        countCell = cellNumStart;       // reset countCell
+
+        // generate cells
+        for (i = 0; i < cellNumStart; i++) {
+            let b = new Bubble(
+                random(sizeCell / 2, width - (sizeCell / 2)),
+                random(sizeCell / 2, height - (sizeCell / 2)),
+                sizeCell,
+                sizeMouse,
+                colourCell);
+            bubbles.push(b);
+        }
     }
 
     // playing screen
@@ -211,11 +216,12 @@ function draw() {
         textAlign(CENTER, CENTER);
         textSize(50);
 
-        text('You died', width / 2, height / 2);
+        text('You died', width / 2, (height / 2) - 40);
 
         textSize(30);
 
-        text('You lasted: ' + timeDuration + 's', width / 2, (height / 2) + 40);
+        text('You lasted: ' + timeDuration + 's', width / 2, (height / 2));
+        text('Click to play again', width / 2, (height / 2) + 35);
         pop()
     }
 
