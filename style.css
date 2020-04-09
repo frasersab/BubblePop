@@ -6,7 +6,9 @@ src: url('./fonts/OpenSans-Regular.ttf') format('truetype');
 html {
     background-color: rgb(243, 220, 220);
 }
-
+div {
+  width: 100%;
+}
 
 body {
   margin: 0;
@@ -17,9 +19,4 @@ body {
 
   /* This centers our sketch vertically. */
   align-items: center;
-}
-h1 {
-    font-family: 'Open Sans', 'Times New Roman', Times, serif;
-    text-align: center;
-    display: block;
 }

@@ -65,6 +65,7 @@ function preload() {
 // -- Setup --
 function setup() {
     let canvas = createCanvas(gameWidth, gameHeight + gameTextHeight);
+
     frameRate(60);
     noCursor();
     textFont(font);
