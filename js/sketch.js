@@ -8,6 +8,8 @@ const cellNumberDeath = 15;
 let countCell = cellNumStart;
 let audioLibrary = [];
 let font;
+let posMouseX;
+let posMouseY;
 
 // game sizes
 const gameWidth = 600;
@@ -112,9 +114,20 @@ function mousePressed() {
 function draw() {
     // draw the background
     background(colourBackground);
+
     // draw white blood cell (mouse)
+    push();
     fill(colourMouse);
-    ellipse(mouseX, mouseY, sizeMouse);
+    if (gameState == 1) {
+        posMouseX = constrain(mouseX, 0 + (sizeMouse / 2), gameWidth - (sizeMouse / 2));
+        posMouseY = constrain(mouseY, 0 + (sizeMouse / 2), gameHeight - (sizeMouse / 2));
+    } else {
+        posMouseX = constrain(mouseX, 0 + (sizeMouse / 2), width - (sizeMouse / 2));
+        posMouseY = constrain(mouseY, 0 + (sizeMouse / 2), height - (sizeMouse / 2));
+    }
+    ellipse(posMouseX, posMouseY, sizeMouse);
+    pop();
+
     // --start screen--
     if (gameState == 0) {
         push();

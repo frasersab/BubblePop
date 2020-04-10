@@ -15,7 +15,7 @@ class Bubble {
 
         this.sizeMouse = sizeMouse;
         this.alive = true;
-        this.deathVector = createVector(mouseX - this.position.x, mouseY - this.position.y);
+        this.deathVector = createVector(posMouseX - this.position.x, posMouseY - this.position.y);
         this.timeImmunity = 1000;
 
         // World variables
@@ -109,7 +109,7 @@ class Bubble {
     // this desides whether the buble should die or not
     death(type = 'pop') {
         if (type == 'pop') {
-            this.deathVector.set(mouseX - this.position.x, mouseY - this.position.y);
+            this.deathVector.set(posMouseX - this.position.x, posMouseY - this.position.y);
             if (this.deathVector.mag() < (this.size / 2) + (this.sizeMouse / 2)) {
                 this.alive = false;
                 audioLibrary[Math.trunc(random(0, audioLibrary.length))].play();
@@ -117,7 +117,7 @@ class Bubble {
 
         }
         else if (type == 'shrink') {
-            this.deathVector.set(mouseX - this.position.x, mouseY - this.position.y);
+            this.deathVector.set(posMouseX - this.position.x, posMouseY - this.position.y);
             if (this.deathVector.mag() < (this.size / 2) + (this.sizeMouse / 2)) {
                 this.size -= 1;
             }
