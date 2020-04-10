@@ -4,7 +4,7 @@ class Bubble {
 
         // Bubble physical properties
         this.velocityMax = velocityMax;
-        this.accelRatio = 3;
+        this.accelRatio = 2.8;
         this.accelerationMax = this.velocityMax * this.accelRatio;
 
         this.size = sizeCell;
@@ -37,6 +37,7 @@ class Bubble {
             this.death();
 
             // Place the bubble behaviour here
+            this.wander();
             this.bounce();
             this.physics();
 
@@ -59,8 +60,11 @@ class Bubble {
     }
 
     physics() {
+
         // Δv = a * Δt
-        //this.velocity.add(this.acceleration.copy().mult(deltaTime / 1000));
+        this.velocity.add(this.acceleration.copy().mult(deltaTime / 1000));
+
+
 
         // Δd = v * Δt
         this.position.add(this.velocity.copy().mult(deltaTime / 1000));
@@ -74,14 +78,14 @@ class Bubble {
     // Randomly move around and change direction
     wander() {
         // Delay the number of times acceleration changes
-        if (millis() - this.timeOld >= random(1500, 2500)) {
+        if (millis() - this.timeOld >= random(1500, 4000)) {
             this.acceleration.rotate(random(0, PI));
             this.acceleration.setMag(random(this.velocityMax, this.accelerationMax));
             this.timeOld = millis();
         }
     }
 
-    // Bounce of the sides of the canvas
+    // Bounce off the sides of the canvas
     bounce() {
         if (this.position.x <= this.size / 2 || this.position.x >= this.gameWidth - (this.size / 2)) {
             this.velocity.set(-this.velocity.x, this.velocity.y);
@@ -104,6 +108,7 @@ class Bubble {
     }
 
     mouseAvoid() {
+
     }
 
     // this desides whether the buble should die or not

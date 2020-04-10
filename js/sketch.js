@@ -10,6 +10,7 @@ let audioLibrary = [];
 let font;
 let posMouseX;
 let posMouseY;
+let randomSpeed;
 
 // game sizes
 const gameWidth = 600;
@@ -27,7 +28,8 @@ let colourCell = 'rgb(143, 218, 255)';
 let colourVirus = 'red';
 
 // sizes
-let sizeMouse = 20;
+const sizeMouseStart = 25;
+let sizeMouse = sizeMouseStart;
 let sizeCell = 30;
 let sizeVirus = 25;
 
@@ -88,17 +90,20 @@ function mousePressed() {
 
 
             bubbles = [];                   // remove all cells
-            sizeMouse = 20;                 // reset mouse size
+            sizeMouse = sizeMouseStart;                 // reset mouse size
             countCell = cellNumStart;       // reset countCell
 
             // generate cells
+            randomSpeed = random(20, 60);
             for (i = 0; i < cellNumStart; i++) {
                 let b = new Bubble(
                     random(sizeCell / 2, width - (sizeCell / 2)),
                     random(sizeCell / 2, height - (sizeCell / 2)),
                     sizeCell,
                     sizeMouse,
-                    colourCell);
+                    colourCell,
+                    'cell',
+                    randomSpeed);
                 bubbles.push(b);
             }
         }
@@ -177,7 +182,7 @@ function draw() {
                 }
                 if (bubbles[i].type == 'cell') {
                     countCell--;
-                    sizeMouse += 3;
+                    sizeMouse += sizeMouse / 20;
                 }
                 // remove bubble from array if dead and reset i counter
                 bubbles.splice(i, 1);
@@ -188,26 +193,31 @@ function draw() {
         // bring in virus
         if (millis() - timeVirusOld >= timeVirus) {
             timeVirus = 3000;
+            randomSpeed = random(40, 60);
             let v = new Bubble(
                 random(sizeVirus / 2, width - (sizeVirus / 2)),
                 random(sizeVirus / 2, height - (sizeVirus / 2)),
                 sizeVirus,
                 sizeMouse,
                 colourVirus,
-                'virus');
+                'virus',
+                randomSpeed);
             bubbles.push(v);
             countVirus++;
             timeVirusOld = millis();
         }
 
         // regenerate a cell
+        randomSpeed = random(20, 60);
         if ((millis() - timeRegenOld >= 1000) && (countCell < cellNumStart)) {
             let b = new Bubble(
                 random(sizeCell / 2, width - (sizeCell / 2)),
                 random(sizeCell / 2, height - (sizeCell / 2)),
                 sizeCell,
                 sizeMouse,
-                colourCell);
+                colourCell,
+                'cell',
+                randomSpeed);
             bubbles.push(b);
 
             countCell++;

@@ -20,5 +20,7 @@ This game is not designed for mobile. It will require at the very least a trackp
 ## Polishing
 This game is not polished. It would be great to have the size of the game adapt to screen size, have a 'how to play' built in and all the features you are used to. But all this takes time and it's just a bit of fun! If you would like to implement these features be my guest, I'll accept working pull requests :)
 
+Also if you do go snooping through the code.. I eventually stopped caring about the beauty and elegance. I just wanted things working! Open source is stressfull times. Once again open to pull requests!
+
 ## Why?
 I wanted to use the P5 javascript library. It is a fantastic library that makes drawing and animating considerably easier (if only I knew this when I did my connect four game!). I started this as 'Bubble Pop' but then this pandemic hit and I saw the oportunity to make it more relevant!
