@@ -46,12 +46,12 @@ let timeRegenOld;
 let timeDuration;
 
 let noInitialVirus;
-let timeVirus = 2500;
-let timeVirus2 = 10000;
-let timeVirus3 = 8000;
+let timeVirus;
+let timeVirus2;
+let timeVirus3;
 let timeVirusEnter = 2;
 let timeVirus2Enter = 20;
-let timeVirus3Enter = 45;
+let timeVirus3Enter = 50;
 let timeRegen = 10000;
 
 let spacePause = false;
@@ -111,6 +111,10 @@ function mousePressed() {
             timePauseStart = 0;
             spacePauseCounter = spacePauseMax;
             noInitialVirus = true;
+
+            timeVirus = 3000;
+            timeVirus2 = 10000;
+            timeVirus3 = 11000;
 
 
             bubbles = [];                   // remove all cells
@@ -213,9 +217,6 @@ function draw() {
                     // Virus 2 or 3
                     // i is cell, j is virus
                     if ((bubbles[i].type == 'cell') && ((bubbles[j].type == 'virus2') || ((bubbles[j].type == 'virus3')))) {
-                        // bubbles[i].type = 'virus2';
-                        // bubbles[i].size = sizeVirus2;
-                        // bubbles[i].colour = colourVirus2;
                         bubbles[i].alive = false;
                         audioLibrary[Math.trunc(random(0, audioLibrary.length))].play();
                         //countCell--;
@@ -223,9 +224,6 @@ function draw() {
                     }
                     // i is virus, j is cell
                     else if ((bubbles[j].type == 'cell') && ((bubbles[i].type == 'virus2') || ((bubbles[i].type == 'virus3')))) {
-                        // bubbles[j].type = 'virus2';
-                        // bubbles[j].size = sizeVirus2;
-                        // bubbles[j].colour = colourVirus2;
                         bubbles[j].alive = false;
                         audioLibrary[Math.trunc(random(0, audioLibrary.length))].play();
                         //countCell--;
@@ -243,7 +241,10 @@ function draw() {
                 }
                 if (bubbles[i].type == 'cell') {
                     countCell--;
-                    sizeMouse += sizeMouse / 90;
+                    if (bubbles[i].deathMouse) {
+                        sizeMouse += sizeMouse / 90;
+                    }
+
                 }
                 // remove bubble from array if dead and reset i counter
                 bubbles.splice(i, 1);
@@ -252,8 +253,7 @@ function draw() {
         }
 
         // bring in virus
-        if ((millis() - timeVirusOld >= timeVirus) || (((timeDuration >= timeVirusEnter)) && noInitialVirus)) {
-            noInitialVirus = false;
+        if ((millis() - timeVirusOld >= timeVirus) && (timeDuration >= 2)) {
             randomSpeed = random(40, 60);
             let v = new Bubble(
                 random(sizeVirus / 2, width - (sizeVirus / 2)),
@@ -301,8 +301,8 @@ function draw() {
         }
 
         // regenerate a cell
-        randomSpeed = random(20, 60);
         if ((millis() - timeRegenOld >= 1000) && (countCell < cellNumStart)) {
+            randomSpeed = random(20, 60);
             let b = new Bubble(
                 random(sizeCell / 2, width - (sizeCell / 2)),
                 random(sizeCell / 2, height - (sizeCell / 2)),
@@ -354,33 +354,36 @@ function draw() {
         }
         pop()
 
-        if (timeDuration > 30) {
-            //timeVirus = 2500;
+        if (timeDuration > 45) {
+            timeVirus = 2700;
         }
-        else if (timeDuration > 60) {
-            //timeVirus = 2000;
+        if (timeDuration > 60) {
+            timeVirus = 2400;
+        }
+        if (timeDuration > 100) {
+            timeVirus = 2000;
+            timeVirus2 = 9000;
+            timeVirus3 = 8500;
+        }
+        if (timeDuration > 140) {
+            timeVirus = 2000;
             timeVirus2 = 8000;
-            timeVirus3 = 7000;
+            timeVirus3 = 7500;
         }
-        else if (timeDuration > 90) {
-            //timeVirus = 2000;
-            timeVirus2 = 7500;
-            timeVirus3 = 6500;
+        if (timeDuration > 180) {
+            timeVirus = 1500;
+            timeVirus2 = 8000;
+            timeVirus3 = 7500;
         }
-        else if (timeDuration > 120) {
-            timeVirus = 2000;
-            timeVirus2 = 6500;
-            timeVirus3 = 5500;
+        if (timeDuration > 200) {
+            timeVirus = 1300;
+            timeVirus2 = 8000;
+            timeVirus3 = 7500;
         }
-        else if (timeDuration > 150) {
-            timeVirus = 2000;
-            timeVirus2 = 6000;
-            timeVirus3 = 5000;
-        }
-        else if (timeDuration > 180) {
+        if (timeDuration > 230) {
             timeVirus = 1000;
-            timeVirus2 = 6000;
-            timeVirus3 = 5000;
+            timeVirus2 = 8000;
+            timeVirus3 = 7500;
         }
 
     }

@@ -15,6 +15,7 @@ class Bubble {
 
         this.sizeMouse = sizeMouse;
         this.alive = true;
+        this.deathMouse = false;
         this.deathVector = createVector(posMouseX - this.position.x, posMouseY - this.position.y);
         this.timeImmunity = 1000;
 
@@ -149,6 +150,7 @@ class Bubble {
             this.deathVector.set(posMouseX - this.position.x, posMouseY - this.position.y);
             if (this.deathVector.mag() < (this.size / 2) + (this.sizeMouse / 2)) {
                 this.alive = false;
+                this.deathMouse = true;
                 audioLibrary[Math.trunc(random(0, audioLibrary.length))].play();
             }
 
