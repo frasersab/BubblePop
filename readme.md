@@ -14,8 +14,8 @@ healthy cells. If you loose too many blue healthy cells you will die.
 ### Red and other cells
 There will be red virus cells that appear periodically that you will need to eliminate. If a red virus cell comes into contact with a blue healthy cell it will corrupt it and turn it into a virus cell. There are two other cells that will show up throughout the game, but their behavior is unknown.
 
-### Slow cells
-If you press spacebar you can temporarily freeze healthy cells in place to give yourself time to fight off viruses. You only get three of these freezes. On the bottom right of the screen there are three white marks keeping track of how many freezes you have left.
+### Freeze cells
+If you press spacebar you can temporarily freeze healthy cells in place to give yourself time to fight off viruses. You only get three of these freezes. To the right of the health bar there are three white marks keeping track of how many freezes you have left.
 
 ### Aim
 The aim of the game is to last as long as you can. There is a time down the bottom right to keep track of your progress.
