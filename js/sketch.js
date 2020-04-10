@@ -4,7 +4,7 @@ console.log('Why hello there you snooping my code');
 let bubbles = [];
 let countVirus = 0;
 const cellNumStart = 40;
-const cellNumberDeath = 15;
+const cellNumberDeath = 18;
 let countCell = cellNumStart;
 let audioLibrary = [];
 let font;
@@ -44,11 +44,14 @@ let timeVirus2Old;
 let timeVirus3Old;
 let timeRegenOld;
 let timeDuration;
-let timeVirus = 1000;
-let timeVirus2 = 5000;
-let timeVirus3 = 3000;
-let timeVirus2Enter = 30;
-let timeVirus3Enter = 60;
+
+let noInitialVirus;
+let timeVirus = 2500;
+let timeVirus2 = 10000;
+let timeVirus3 = 8000;
+let timeVirusEnter = 2;
+let timeVirus2Enter = 20;
+let timeVirus3Enter = 45;
 let timeRegen = 10000;
 
 let spacePause = false;
@@ -107,10 +110,11 @@ function mousePressed() {
             timeRegenOld = 0;
             timePauseStart = 0;
             spacePauseCounter = spacePauseMax;
+            noInitialVirus = true;
 
 
             bubbles = [];                   // remove all cells
-            sizeMouse = sizeMouseStart;                 // reset mouse size
+            sizeMouse = sizeMouseStart;     // reset mouse size
             countCell = cellNumStart;       // reset countCell
 
             // generate cells
@@ -214,7 +218,7 @@ function draw() {
                         // bubbles[i].colour = colourVirus2;
                         bubbles[i].alive = false;
                         audioLibrary[Math.trunc(random(0, audioLibrary.length))].play();
-                        countCell--;
+                        //countCell--;
                         //countVirus++;
                     }
                     // i is virus, j is cell
@@ -224,7 +228,7 @@ function draw() {
                         // bubbles[j].colour = colourVirus2;
                         bubbles[j].alive = false;
                         audioLibrary[Math.trunc(random(0, audioLibrary.length))].play();
-                        countCell--;
+                        //countCell--;
                         //countVirus++;
                     }
                 }
@@ -239,7 +243,7 @@ function draw() {
                 }
                 if (bubbles[i].type == 'cell') {
                     countCell--;
-                    sizeMouse += sizeMouse / 80;
+                    sizeMouse += sizeMouse / 90;
                 }
                 // remove bubble from array if dead and reset i counter
                 bubbles.splice(i, 1);
@@ -248,8 +252,8 @@ function draw() {
         }
 
         // bring in virus
-        if (millis() - timeVirusOld >= timeVirus) {
-            timeVirus = 3000;
+        if ((millis() - timeVirusOld >= timeVirus) || (((timeDuration >= timeVirusEnter)) && noInitialVirus)) {
+            noInitialVirus = false;
             randomSpeed = random(40, 60);
             let v = new Bubble(
                 random(sizeVirus / 2, width - (sizeVirus / 2)),
@@ -350,6 +354,34 @@ function draw() {
         }
         pop()
 
+        if (timeDuration > 30) {
+            //timeVirus = 2500;
+        }
+        else if (timeDuration > 60) {
+            //timeVirus = 2000;
+            timeVirus2 = 8000;
+            timeVirus3 = 7000;
+        }
+        else if (timeDuration > 90) {
+            //timeVirus = 2000;
+            timeVirus2 = 7500;
+            timeVirus3 = 6500;
+        }
+        else if (timeDuration > 120) {
+            timeVirus = 2000;
+            timeVirus2 = 6500;
+            timeVirus3 = 5500;
+        }
+        else if (timeDuration > 150) {
+            timeVirus = 2000;
+            timeVirus2 = 6000;
+            timeVirus3 = 5000;
+        }
+        else if (timeDuration > 180) {
+            timeVirus = 1000;
+            timeVirus2 = 6000;
+            timeVirus3 = 5000;
+        }
 
     }
 
