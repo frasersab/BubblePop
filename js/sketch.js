@@ -26,20 +26,36 @@ let colourBackgroundText = 'rgb(205, 118, 118)';
 let colourMouse = 'white';
 let colourCell = 'rgb(143, 218, 255)';
 let colourVirus = 'red';
+let colourVirus2 = 'rgb(50, 50, 50)';
+let colourVirus3 = 'rgb(252, 186, 3)';
 
 // sizes
 const sizeMouseStart = 25;
 let sizeMouse = sizeMouseStart;
 let sizeCell = 30;
 let sizeVirus = 25;
+let sizeVirus2 = 18;
+let sizeVirus3 = 40;
 
 // timers
 let timeGameStart;
 let timeVirusOld;
+let timeVirus2Old;
+let timeVirus3Old;
 let timeRegenOld;
 let timeDuration;
 let timeVirus = 1000;
+let timeVirus2 = 5000;
+let timeVirus3 = 3000;
+let timeVirus2Enter = 30;
+let timeVirus3Enter = 60;
 let timeRegen = 10000;
+
+let spacePause = false;
+let spacePauseTime = 3000;
+let timePauseStart;
+let spacePauseCounter;
+const spacePauseMax = 3;
 
 let gameState = 0;
 // 0 - start screen
@@ -86,7 +102,11 @@ function mousePressed() {
             gameState = 1;
             timeGameStart = millis();
             timeVirusOld = 0;
+            timeVirus2Old = 0;
+            timeVirus3Old = 0;
             timeRegenOld = 0;
+            timePauseStart = 0;
+            spacePauseCounter = spacePauseMax;
 
 
             bubbles = [];                   // remove all cells
@@ -94,8 +114,9 @@ function mousePressed() {
             countCell = cellNumStart;       // reset countCell
 
             // generate cells
-            randomSpeed = random(20, 60);
+
             for (i = 0; i < cellNumStart; i++) {
+                randomSpeed = random(20, 60);
                 let b = new Bubble(
                     random(sizeCell / 2, width - (sizeCell / 2)),
                     random(sizeCell / 2, height - (sizeCell / 2)),
@@ -111,6 +132,17 @@ function mousePressed() {
         // playing screen
         else if (gameState == 1) {
 
+        }
+    }
+}
+
+function keyPressed() {
+    // Spacebar
+    if ((keyCode == 32) && !spacePause) {
+        if (spacePauseCounter >= 1) {
+            spacePause = true;
+            timePauseStart = millis();
+            spacePauseCounter--;
         }
     }
 }
@@ -147,6 +179,9 @@ function draw() {
 
     // --playing screen--
     else if (gameState == 1) {
+        // calculate time duration
+        timeDuration = int((millis() - timeGameStart) / 1000);
+
         // do bubble intersection check, draw and delete dead bubbles
         for (i = 0; i < bubbles.length; i++) {
             // check for intersection with other bubbles (do not check self or already checked combos)
@@ -154,6 +189,7 @@ function draw() {
                 if (j == i) { continue; }
                 // check for intersection between bubble[i] and bubble[j]
                 if (bubbles[i].intersects(bubbles[j])) {
+                    // normal virus
                     // i is cell, j is virus
                     if ((bubbles[i].type == 'cell') && (bubbles[j].type == 'virus')) {
                         bubbles[i].type = 'virus';
@@ -170,6 +206,27 @@ function draw() {
                         countCell--;
                         countVirus++;
                     }
+                    // Virus 2 or 3
+                    // i is cell, j is virus
+                    if ((bubbles[i].type == 'cell') && ((bubbles[j].type == 'virus2') || ((bubbles[j].type == 'virus3')))) {
+                        // bubbles[i].type = 'virus2';
+                        // bubbles[i].size = sizeVirus2;
+                        // bubbles[i].colour = colourVirus2;
+                        bubbles[i].alive = false;
+                        audioLibrary[Math.trunc(random(0, audioLibrary.length))].play();
+                        countCell--;
+                        //countVirus++;
+                    }
+                    // i is virus, j is cell
+                    else if ((bubbles[j].type == 'cell') && ((bubbles[i].type == 'virus2') || ((bubbles[i].type == 'virus3')))) {
+                        // bubbles[j].type = 'virus2';
+                        // bubbles[j].size = sizeVirus2;
+                        // bubbles[j].colour = colourVirus2;
+                        bubbles[j].alive = false;
+                        audioLibrary[Math.trunc(random(0, audioLibrary.length))].play();
+                        countCell--;
+                        //countVirus++;
+                    }
                 }
             }
             if (bubbles[i].alive) {
@@ -182,7 +239,7 @@ function draw() {
                 }
                 if (bubbles[i].type == 'cell') {
                     countCell--;
-                    sizeMouse += sizeMouse / 20;
+                    sizeMouse += sizeMouse / 80;
                 }
                 // remove bubble from array if dead and reset i counter
                 bubbles.splice(i, 1);
@@ -207,6 +264,38 @@ function draw() {
             timeVirusOld = millis();
         }
 
+        // bring in virus2
+        if ((millis() - timeVirus2Old >= timeVirus2) && (timeDuration >= timeVirus2Enter)) {
+            randomSpeed = random(50, 80);
+            let v = new Bubble(
+                random(sizeVirus2 / 2, width - (sizeVirus2 / 2)),
+                random(sizeVirus2 / 2, height - (sizeVirus2 / 2)),
+                sizeVirus2,
+                sizeMouse,
+                colourVirus2,
+                'virus2',
+                randomSpeed);
+            bubbles.push(v);
+            countVirus++;
+            timeVirus2Old = millis();
+        }
+
+        // bring in virus3
+        if ((millis() - timeVirus3Old >= timeVirus3) && (timeDuration >= timeVirus3Enter)) {
+            randomSpeed = random(50, 80);
+            let v = new Bubble(
+                random(sizeVirus3 / 2, width - (sizeVirus3 / 2)),
+                random(sizeVirus3 / 2, height - (sizeVirus3 / 2)),
+                sizeVirus3,
+                sizeMouse,
+                colourVirus3,
+                'virus3',
+                randomSpeed);
+            bubbles.push(v);
+            countVirus++;
+            timeVirus3Old = millis();
+        }
+
         // regenerate a cell
         randomSpeed = random(20, 60);
         if ((millis() - timeRegenOld >= 1000) && (countCell < cellNumStart)) {
@@ -226,7 +315,6 @@ function draw() {
 
         if (countCell < cellNumberDeath) {
             gameState = 2;
-            timeDuration = int((millis() - timeGameStart) / 1000);
         }
         // Game text
         push()
@@ -240,14 +328,26 @@ function draw() {
 
         timeDuration = int((millis() - timeGameStart) / 1000);
         let timeText = 'Time ' + timeDuration + 's';
-        text(timeText, 410, (height - gameTextHeight) + gameTextHeight / 2);
+        text(timeText, 475, (height - gameTextHeight) + gameTextHeight / 2);
 
+        // health Bar
         fill('red');
         rect(90, healthBarCorner, healthBarWidth, healthBarHeight);
 
         fill('green');
         rect(90, healthBarCorner, healthBarWidth * ((countCell - cellNumberDeath + 1) / (cellNumStart - cellNumberDeath + 1)), healthBarHeight);
 
+        // pause numbers
+        fill('white');
+        if (spacePauseCounter >= 1) {
+            rect(405, healthBarCorner, 15, healthBarHeight);
+        }
+        if (spacePauseCounter >= 2) {
+            rect(425, healthBarCorner, 15, healthBarHeight);
+        }
+        if (spacePauseCounter >= 3) {
+            rect(445, healthBarCorner, 15, healthBarHeight);
+        }
         pop()
 
 
