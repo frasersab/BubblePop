@@ -1,5 +1,7 @@
 # Corona Pop!
 ## How to play
+Navigate to https://frasersab.github.io/CoronaPop/ to play!
+
 ### White cells
 You are a white blood cell in the body, use your mouse to control the position.
 
