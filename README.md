@@ -28,7 +28,7 @@ At the time of making this was compatible with a Chrome or Firefox browser. It i
 This game is not designed for mobile. It will require at the very least a trackpad or more ideally a mouse and a spacebar.
 
 ## Polishing
-This game is not polished. It would be great to have the size of the game adapt to screen size, have a 'how to play' built in and all the features you are used to. But all this takes time and it's just a bit of fun! If you would like to implement these features be my guest, I'll accept any working pull requests :)
+If I were to do it again, I would do it differently. But it's time for new projects!
 
 ## Why?
-I wanted to use the P5 javascript library. It is a fantastic library that makes drawing and animating considerably easier (if only I knew this when I did my connect four game!). I started this as 'Bubble Pop' but then this pandemic hit and I saw the oportunity to make it more relevant!
+I wanted to use the P5 javascript library. It is a fantastic library that makes drawing and animating considerably easier (if only I knew about this when I did my connect four game!). I started this as 'Bubble Pop' but then this pandemic hit and I saw the oportunity to make it more relevant!
